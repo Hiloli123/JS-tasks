@@ -16,35 +16,137 @@ Example Input:
 </head>
 <body>
     <div id="result"></div>
+    <form onsubmit="cal(event)">
+        <label>Select the Product:</label>
+        <select id = "product">
+            <option value="Mobile">Mobile</option>
+            <option value="Laptop">Laptop</option>
+            <option value="keyboard">keyboard</option>
+            <option value="Mouse">Mouse</option>
+        </select> <br><br>
+        <lable>Enter the amount:</lable>
+        <input type="text" id="price" placeholder="amount"  required/> <br><br>
+        <label>Quantity:</label>
+        <input type="number" id="quantity"  min="1"/> <br><br>
+        
+
+        <button  type="submit">Calculate Amount</button>
+    </form>
+    
     <script>
-        let a= [
-    {name: "Laptop", price: 80000, quantity: 1},
-    {name: "Mouse", price: 2500, quantity: 2}
-                ]
-        let c = [];
-        for (let i =0; i<a.length; i++){
-            b = (a[i].price*a[i].quantity);
-            c.push(b);
-        }
+            let a = [];
+            
+            function cal(event){
+                event.preventDefault()
+                
+                let name = document.getElementById("product").value;
+                let que = document.getElementById("quantity").value;
+                let pri = document.getElementById("price").value;
 
-        function sum(){
-            let d = 0;
-            for (let e = 0; e < arguments.length; e++){
-                d += arguments[e]  ;
+                let item = {
+                    product : name,
+                    quen : Number(que),
+                    pric : Number(pri)
+                };
+
+                a.push(item);
+                total();
+                
             }
-            return d;
-        }
-        let amount = sum(...c);
-        if (amount > 10000){
-            final = amount - (amount/10);
-        }
-        else{
-            final = amount;
 
-        }
+            function total(){
+                let c = [];
+                
+                for (let i =0; i<a.length; i++){
+                     let b = (a[i].pric*a[i].quen);
+                    c.push(b);
+                    
+                }
 
-        let total = final + (final*(0.08));
-        let pay = total.toFixed(2);
-        document.getElementById("result").innerHTML+= "Tatal payable amount is:" + pay;
+                function sum(){
+                    let d = 0;
+                    for (let e = 0; e < arguments.length; e++){
+                        d += arguments[e]  ;
+                    }
+                    return d;
+                }
+                let amount = sum(...c);
+                if (amount > 10000){
+                    let final = amount - (amount/10);
+                }
+                else{
+                    final = amount;
+
+                }
+                let total = final + (final*(0.08));
+                let pay = total.toFixed(2);
+                document.getElementById("result").innerHTML = "Tatal payable amount is:" + pay;
+
+            }
+
+        // function cal(event){
+        //     event.preventDefault();
+        //     let price = document.getElementById("price").value;
+        //     let quent = document.getElementById("quantity").value;
+
+        //     let amount = price * quent;
+
+        //     if (amount>10000){
+        //         final = amount - (amount/10);
+        //     }
+        //     else{
+        //         final = amount;
+        //     }
+
+        //     total = final + (final*0.08);
+
+        //     document.getElementById("result").innerHTML = "Total amount is:" + total;
+        // }
+
+    
+    //     let a= [
+    // {name: "Laptop", price: 80000, quantity: 1},
+    // {name: "Mouse", price: 2500, quantity: 2}
+    //             ]
+        // let c = [];
+        // for (let i =0; i<a.length; i++){
+        //     b = (a[i].price*a[i].quantity);
+        //     c.push(b);
+        // }
+        
+        // let a = document.getElementById("price").value;
+        // let b = document.getElementById("quantity").value;
+        // let x = a * b;
+        // c.push(x);
+        // function cal(){
+        //     return c;
+        //     // document.write(c);
+        // }
+        
+    
+
+        // function sum(){
+        //     let d = 0;
+        //     for (let e = 0; e < arguments.length; e++){
+        //         d += arguments[e]  ;
+        //     }
+        //     return d;
+        // }
+    //     let amount = (...c)
+    //     if (amount > 10000){
+    //         final = amount - (amount/10);
+    //     }
+    //     else{
+    //         final = amount;
+
+    //     }
+    //     let total = final + (final*(0.08));
+    //     let pay = total.toFixed(2);
+    //     // document.getElementById("result").innerHTML+= "Tatal payable amount is:" + pay;
+    //     return pay;
+    // }
+    // document.getElementById("result").innerHTML+= "Tatal payable amount is:" +c;
+
+        
     </script>
 </body>
