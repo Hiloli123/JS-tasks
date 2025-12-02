@@ -1,0 +1,47 @@
+<!-- Task 3: Object Property Counter
+Problem: Write a function that takes an array of objects and returns an object counting how many times each property value appears.
+Example Input:
+[
+    {name: "John", age: 25},
+    {name: "Jane", age: 25},
+    {name: "Bob", age: 30}
+]
+
+Expected Output: {John: 1, Jane: 1, Bob: 1, 25: 2, 30: 1} -->
+
+<!DOCTYPE html>
+<head>
+
+</head>
+<body>
+    <div id = "result"></div>
+    <script>
+        function joincount(a){
+        let m = {};
+        // let a = [
+        //     {name: "John", age: 25},
+        //     {name: "Jane", age: 25},
+        //     {name: "Bob", age: 30}
+        //         ];
+        for (let x of a){
+            for (let key in x){
+                let v = x[key];
+                m[v]= (m[v] || 0) + 1;
+            }
+        }
+        return JSON.stringify(m);
+        }
+
+        let result = joincount([
+            {name: "John", age: 25},
+            {name: "Jane", age: 25},
+            {name: "Bob", age: 30},
+                ])
+        
+
+        document.getElementById("result").innerHTML+= result;
+
+
+
+    </script>
+</body>

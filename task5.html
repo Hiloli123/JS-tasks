@@ -1,0 +1,50 @@
+<!-- Task 5: Shopping Cart Calculator
+Problem: Create a shopping cart system that calculates total price with discounts and tax.
+Requirements:
+Apply 10% discount if total > 10000
+Apply 8% tax on final amount
+Round to 2 decimal places
+Example Input:
+[
+    {name: "Laptop", price: 80000, quantity: 1},
+    {name: "Mouse", price: 2500, quantity: 2}
+] -->
+
+<!DOCTYPE html>
+<head>
+
+</head>
+<body>
+    <div id="result"></div>
+    <script>
+        let a= [
+    {name: "Laptop", price: 80000, quantity: 1},
+    {name: "Mouse", price: 2500, quantity: 2}
+                ]
+        let c = [];
+        for (let i =0; i<a.length; i++){
+            b = (a[i].price*a[i].quantity);
+            c.push(b);
+        }
+
+        function sum(){
+            let d = 0;
+            for (let e = 0; e < arguments.length; e++){
+                d += arguments[e]  ;
+            }
+            return d;
+        }
+        let amount = sum(...c);
+        if (amount > 10000){
+            final = amount - (amount/10);
+        }
+        else{
+            final = amount;
+
+        }
+
+        let total = final + (final*(0.08));
+        let pay = total.toFixed(2);
+        document.getElementById("result").innerHTML+= "Tatal payable amount is:" + pay;
+    </script>
+</body>

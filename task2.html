@@ -1,0 +1,46 @@
+<!-- Task 2: String Reversal with Conditions
+Problem: Create a function that reverses a string, but keeps numbers in their original positions.
+Example Input: "abc123def" Expected Output: "fed123cba" -->
+
+<!DOCTYPE html>
+<head>
+
+</head>
+<body>
+    <div id="result"></div>
+    <script>
+        function revrs(a){
+            // let a = "abc123def";
+            let b = "";
+
+            let inedex = (a.length-1);
+            let i;
+            for (let i=inedex; i >= 0; i-- ){
+                if (isNaN(a[i])){
+                        b =  b + a[i];
+                    }
+                }
+                
+            let result = "";
+            let x=0;
+            for (let ch of a){
+                if(!isNaN(ch)){
+                    result += ch;
+                }
+                else{
+                    result += b[x++];
+                }
+                
+            }
+            return result;
+            
+        }
+        let rev = revrs("abc123def");
+        document.getElementById("result").innerHTML+= rev ;   
+        document.getElementById("result").innerHTML+= b[0] ;  
+            
+        
+        // let result = revrs("abc123def");
+        
+    </script>
+</body>
