@@ -16,6 +16,7 @@ Example Input:
 </head>
 <body>
     <div id="result"></div>
+    <div id="result2"></div>
     <form onsubmit="cal(event)">
         <label>Select the Product:</label>
         <select id = "product">
@@ -71,8 +72,9 @@ Example Input:
                     return d;
                 }
                 let amount = sum(...c);
+                let final;
                 if (amount > 10000){
-                    let final = amount - (amount/10);
+                    final = amount - (amount/10);
                 }
                 else{
                     final = amount;
@@ -80,6 +82,7 @@ Example Input:
                 }
                 let total = final + (final*(0.08));
                 let pay = total.toFixed(2);
+                document.getElementById("result2").innerHTML = "Item inside cart is:" + JSON.stringify(a,null,2);
                 document.getElementById("result").innerHTML = "Tatal payable amount is:" + pay;
 
             }
