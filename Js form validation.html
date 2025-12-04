@@ -6,7 +6,7 @@
         <link rel="stylesheet" href="test.css">
         <style>.hid{display: none;
         }
-        #sm4, #sm3,#sm2,#sm{
+        #sm1, #sm3,#sm2,#sm, #smd{
             color: red;
             font-size: 12px;
 
@@ -15,25 +15,25 @@
     </head>
     <body>
         
-        <form class="form" onsubmit="vali()">
+        <form class="form" onsubmit="return vali()">
             <fieldset>
             <legend>Personal Information</legend>
                 <div class="diva">
                     <div class="subdiv">
-                        <label for="first name">First Name</label>
+                        <label for="first name">First Name*</label>
                     </div>
                 
                     <div class="subdiv">
-                        <input type="text" id="fn"  placeholder="First name"/>
+                        <input type="text" id="fn" required placeholder="First name"/>
                         <div > <p id="sm"> </p></div>
                     </div>
                 </div>
                 <div class="diva">
                     <div class="subdiv">
-                        <label for="last name">Last name:</label>
+                        <label for="last name">Last name:*</label>
                     </div>
                     <div class="subdiv">
-                        <input type="text" id="fnn"  placeholder="Last name">
+                        <input type="text" id="fnn" required  placeholder="Last name">
                         <div > <p id="sm2"> </p></div>
                     </div>
                 </div>
@@ -48,10 +48,10 @@
                 </div>
                 <div class="diva">
                     <div class="subdiv">
-                        <label for="phone number">Phone Number:</label>
+                        <label for="phone number">Phone Number:*</label>
                     </div>
                     <div class="subdiv">
-                        <input type="text" id="phone" placeholder="0123456789" maxlength="10"/>
+                        <input type="text" id="phone" required placeholder="0123456789" maxlength="10"/>
                         <div id="sm3"></div>
                     </div>
                 </div>
@@ -60,7 +60,8 @@
                         <label for="Date of birth">Date of Birth: </label>
                     </div>
                     <div class="subdiv">
-                        <input type="date" />
+                        <input type="date" id="d" />
+                        <div id="smd"></div>
                     </div>
                 </div>
                 <div class="diva">
@@ -103,6 +104,7 @@
                     </div>
                     <div class="subdiv">
                         <input type="text"  id="post">
+                        <div id="smpost"></div>
                     </div>
                     <div class="subdiv">
                         <label for="country">Country</label>
@@ -120,11 +122,11 @@
             <legend>Acedemic INformation</legend>
                 <div class="diva">
                     <div class="subdiv">
-                        <label for="Student ID">Student ID</label>
+                        <label for="Student ID" >Student ID*</label>
                     </div>
                     <div class="subdiv">
-                        <input type="text" name="ID" id="stu">
-                        <div id="sm4"></div>
+                        <input type="text" required name="ID" id="stud">
+                        <div id="sm1"></div>
                     </div>
                     <div class="subdiv">
                         <label for="Program">Program/Course</label>
@@ -226,38 +228,72 @@
             
         </form>
         <script>
+            // return false;
             function vali(){
-            let pat = /^[A-Za-z]{2,}$/;
-            let pat2 = /^[0-9]{10}$/;
-            let pat3 = /^STU\d{4}$/;
+                
+                let pat = /^[A-Za-z]{2,}$/;
+                let pat2 = /^[0-9]{10}$/;
+                let pat3 = /^STU\d{4}$/;
+                let pat4 = /^[A-Z]{2,}$/;
 
-            let out = document.getElementById("fn");
-            let outt = document.getElementById("fnn");
-            let phone = document.getElementById("phone");
-            let post = document.getElementById("post");
-            let mainout = out.value;
+                let out = document.getElementById("fn").value;
+                let outt = document.getElementById("fnn").value;
+                let phone = document.getElementById("phone").value;
+                let stud = document.getElementById("stud").value;
+                let da = document.getElementById("d").value;
+                let today = new Date();
+                today.setHours(0,0,0,0);
+                let da1 = new Date(da);
+                da1.setHours(0,0,0,0);
+                let err = false;
 
-
-            if (!pat.test(out.value)){
-                alert("First name should be atleast 2 character");
-            }
-            else if (!pat.test(outt.value)){
-                alert("Last Name should be atleast 2 character");
-            }
-            else if(!pat2.test(phone.value)){
-                alert("Phone number invalid!");
-            }
+                if (!pat4.test(out)){
+                    (document.getElementById("sm").innerHTML="First name shold be capital");
+                    err = true;
+                }
             
-            else if (!pat3.test(post.value)){
-                alert("Post Code invalid");
+                 
 
-            } else{
-                alert("Thank you for Submition!" + mainout);
-            }
+                else if (!pat.test(outt)){
+                    (document.getElementById("sm2").innerHTML="Last name shold be only letter");
+                    err = true;
+            
+                } 
+                
+                if (!pat2.test(phone)){
+                    (document.getElementById("sm3").innerHTML="Phone Number shold be Digit");
+                    err = true;
+            
+                } 
+
+                if (!pat3.test(stud)){
+                    (document.getElementById("sm1").innerHTML="Student Id STU1234");
+                    err = true;
+            
+                } 
+
+                if (da1 >= today){
+                    (document.getElementById("smd").innerHTML="Date sholud be past date");
+                    err = true;
+                }
+
+                if (err){
+                    return false;
+                }
+
+                else {
+                    alert("Form Submitted Succesfully!" + out);
+                    return true;
+                    
+                }
+
+            
+            
             
 
 
         }
+    
 
     
 
@@ -306,18 +342,18 @@
                 }
             });
 
-            let ac = document.getElementById("stu");
+            let ac = document.getElementById("stud");
 
             ac.addEventListener("input",function(){
-                let p = /^STU+\d{4}$/;
+                let p = /^STU\d{4}$/;
             
                 if (p.test(ac.value)){
                     ac.style.color="green";
-                    sm4.textContent="";
+                    sm1.textContent="";
 
                 } else {
                     ac.style.color="red";
-                    sm4.textContent="Student Id must be STU1234 format";
+                    sm1.textContent="Student Id must be STU1234 format";
                 }
             });
 
