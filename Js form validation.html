@@ -6,7 +6,7 @@
         <link rel="stylesheet" href="test.css">
         <style>.hid{display: none;
         }
-        #sm1, #sm3,#sm2,#sm, #smd{
+        #sm1, #sm3,#sm2,#sm, #smd, #sm6{
             color: red;
             font-size: 12px;
 
@@ -141,7 +141,8 @@
                         <label for="Year of study">Year of Study</label>
                     </div>
                     <div class="subdiv">
-                        <input type="text" >
+                        <input type="text" id="year">
+                        <div id="sm6"></div>
                     </div>
                     <div class="subdiv">
                         <label for="CGPA">CGPA:</label>
@@ -204,7 +205,7 @@
                 <div class="diva two">
                     <div class="subdiv">
                         <input type="checkbox" name="support"> Subscribe our Newsletter 
-                    </div>
+                    </div><br>
                     <div class="subdiv">
                         <input type="checkbox" name="term">Accept our terms and Condition
                     </div>
@@ -229,9 +230,11 @@
         </form>
         <script>
             // return false;
-            let fc = document.getElementById("fmmain");
+            
             document.getElementById("fmmain").addEventListener("submit",function(event){
+                let fc = document.getElementById("fmmain");
                 event.preventDefault();
+                
                 
 
                 document.getElementById("sm").innerHTML="";
@@ -239,6 +242,8 @@
                 document.getElementById("sm2").innerHTML="";
                 document.getElementById("sm3").innerHTML="";
                 document.getElementById("smd").innerHTML="";
+                document.getElementById("sm6").innerHTML="";
+
 
 
                 
@@ -246,12 +251,14 @@
                 let pat2 = /^[0-9]{10}$/;
                 let pat3 = /^STU\d{4}$/;
                 let pat4 = /^[A-Z]{2,}$/;
+                let pat5 = /^[0-9]{4}$/;
 
                 let out = document.getElementById("fn").value;
                 let outt = document.getElementById("fnn").value;
                 let phone = document.getElementById("phone").value;
                 let stud = document.getElementById("stud").value;
                 let da = document.getElementById("d").value;
+                let year = document.getElementById("year").value;
                 let today = new Date();
                 today.setHours(0,0,0,0);
                 let da1 = new Date(da);
@@ -279,6 +286,12 @@
 
                 if (!pat3.test(stud)){
                     (document.getElementById("sm1").innerHTML="Student Id STU1234");
+                    err = false;
+            
+                } 
+
+                if (!pat5.test(year)){
+                    (document.getElementById("sm6").innerHTML="year shold be in digit");
                     err = false;
             
                 } 
@@ -364,6 +377,20 @@
                 } else {
                     ac.style.color="red";
                     sm1.textContent="Student Id must be STU1234 format";
+                }
+            });
+            let ad = document.getElementById("year");
+
+            ad.addEventListener("input",function(){
+                let p = /^[0-9]{4}$/;
+            
+                if (p.test(ad.value)){
+                    ad.style.color="green";
+                    sm6.textContent="";
+
+                } else {
+                    ad.style.color="red";
+                    sm6.textContent="Year is not valid";
                 }
             });
 
