@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        #main{
+            display: flex;
+            flex-direction: column;
+            justify-self: center;
+            border: 2px solid black;
+            margin: 0px 10px;
+            padding: 10px;
+            width: 50%;
+            background-color: blueviolet;
+        }
+        #p1{
+            height: 5vh;
+            
+            color: white;
+            text-align: center;
+            padding-top: 50px;
+            font-size: 34px;
+            border-radius: 20px;
+            border-color: 2px solid white;
+        }
+        #tbody{
+            background-color: rgb(208, 215, 244);
+            align-self: center;
+            width: 100%;
+        }
+        #t1{
+            padding: 10px 0px;
+            width: 1000px;
+        }
+        button, select, input{
+            border: 1px solid black;
+            padding: 10px 15px;
+            color: blue;
+            background-color: white;
+            border-radius: 5px;
+            font-size: 15px;
+            margin: 10px 10px;
+            
+        }
+        button:focus{
+            background-color: blue;
+            color: white;
+        }
+
+        #showtask{
+            background-color: white;
+            width: 90%;
+            justify-self: center;
+            border-radius: 1px solid blue;
+            border-radius: 20px;
+        }
+        #count{
+            display: flex;
+            flex-direction: row;
+            gap: 20px;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+        }
+        #tt, #cm, #pe{
+            text-align: center;
+            justify-self: center;
+            padding-top: 50%;
+            display: block;
+            color: black;
+            background-color: white;
+            height: 10vh;
+            width: 15vh;
+            opacity: 0.7;
+            border-radius: 10px;
+            
+            
+        }
+        #addtask{
+            background-color: blue;
+            color: white;
+        }
+
+
+    </style>
+
+</head>
+
+<body>
+
+    
+
+    <div id="main">
+        <p id="p1">Advance Task Manager</p>
+        <div id="count">
+            <div><p>Total Task</p>
+                <div id="tt"></div>
+            </div>
+            <div><p>Completed</p>
+                <div id="cm"></div>
+            </div>
+            <div><p>Pending</p>
+                <div id="pe"></div>
+        </div>
+        </div>
+        <input type="checkbox" style="align-self: end;"
+        onclick="to(this.checked)" /><p style="text-align: end;">Dark mode</p>
+    <div id="tbody">
+    <div id="t1">
+        <input type="text" id="taskname" placeholder="Taskname">
+        <select id="priority">
+            <option value="High">High</option>
+            <option value="Medium">Medium</option>
+            <option value="Low">Low</option>
+        </select>
+        <select id="status">
+            <option value="pending">pending</option>
+            <option value="completed">completed</option>
+        </select>
+        <button id="addtask">Add Task</button>
+    </div>
+
+    
+    <div>
+        <button onclick="filtask('all')">All</button>
+        <button onclick="filstatus('pending')">Pending</button>
+        <button onclick="filstatus('completed')">completed</button>
+
+        
+        <button onclick="filtask('High')">High</button>
+        <button onclick="filtask('Medium')">Medium</button>
+        <button onclick="filtask('Low')">Low</button>
+    </div> 
+    
+    <div id="showtask"></div>
+    </div>
+    </div>
+
+    <script>
+
+        let tasks = [];
+        let editIndex = null;
+
+        
+        if(localStorage.getItem("tasks")){
+            tasks = JSON.parse(localStorage.getItem("tasks"));
+            showtask(tasks);
+            updateCounts()
+        }
+
+        
+        document.getElementById("addtask").addEventListener("click", function(){
+            let name = document.getElementById("taskname").value;
+            let priority = document.getElementById("priority").value;
+            let status = document.getElementById("status").value;
+
+            if(!name){
+                alert("Enter Task Name");
+                return;
+            }
+
+            let newTask = {
+                id: Date.now(),
+                taskname: name,
+                priority: priority,
+                status: status
+            };
+
+            tasks.push(newTask);
+            saveTasks();
+            showtask(tasks);
+            updateCounts();
+
+            document.getElementById("taskname").value = "";
+            document.getElementById("tt").innerHTML = tasks.length;
+        });
+
+        
+        function showtask(taskArray){
+            document.getElementById("showtask").innerHTML = "";
+
+            taskArray.forEach((task, index) => {
+
+                document.getElementById("showtask").innerHTML += `
+                    <div style="margin:10px; padding:10px;
+                        
+                    text-decoration: ${task.status=='completed' ? 'line-through' : 'none'};">
+                
+                    <input type="checkbox" 
+                    onclick="toggle(${task.id}, this.checked)"
+                    ${task.status=="completed" ? "checked" : ""} />
+
+                        <h4>Task Name:${task.taskname}</h4>
+                        <p>ID: ${task.id}</p>
+                        <p>Status: ${task.status}</p>
+                        <p>Priority: ${task.priority}</p>
+                        
+
+                        <button onclick="openedit(${task.id})" id="hiy" style="display: ${task.status=='completed' ? 'none' : 'block'};">Edit</button>
+                        <button onclick="deletetask(${task.id})" id="del">Delete</button><hr>
+
+                        
+                        <div id="editBox_${task.id}" style="display:none; margin-top:10px;">
+                            <input type="text" id="editName_${task.id}" value="${task.taskname}">
+                            <select id="editPriority_${task.id}">
+                                <option ${task.priority=="High"?"selected":""}>High</option>
+                                <option ${task.priority=="Medium"?"selected":""}>Medium</option>
+                                <option ${task.priority=="Low"?"selected":""}>Low</option>
+                            </select>
+                            <select id="editstatus_${task.id}">
+                                <option ${task.status=="pending"?"selected":""}>pending</option>
+                                <option ${task.status=="completed"?"selected":""}>completed</option>
+                            </select>
+                            
+                            <button onclick="saveedit(${task.id})">Save</button>
+                            
+                        </div>
+                    </div>
+                `;
+
+            });
+        }
+
+        
+        function saveTasks(){
+            localStorage.setItem("tasks", JSON.stringify(tasks));
+        }
+
+        
+        function openedit(id){
+            document.getElementById("editBox_" + id).style.display = "block";
+            document.getElementById("del").style.display = "none";
+
+        }
+
+        
+        function cancelEdit(id){
+            document.getElementById("editBox_" + id).style.display = "none";
+        }
+
+        
+        function saveedit(id){
+            let updatedname = document.getElementById("editName_" + id).value;
+            let updatedpriority = document.getElementById("editPriority_" + id).value;
+            let updatestatus = document.getElementById("editstatus_"+ id).value;
+
+            let index = tasks.findIndex(t => t.id === id);
+
+            tasks[index].taskname = updatedname;
+            tasks[index].priority = updatedpriority;
+            tasks[index].status = updatestatus;
+
+            saveTasks();
+            showtask(tasks);
+            updateCounts();
+        }
+
+        
+        function deletetask(id){
+            if (confirm("Are you sure to delete task?")){
+            tasks = tasks.filter(t => t.id !== id);
+
+            saveTasks();
+            showtask(tasks);
+            updateCounts();
+        }
+    }
+
+        function updateCounts() {
+            let total = tasks.length;
+            let completed = tasks.filter(t => t.status === "completed").length;
+            let pending = tasks.filter(t => t.status === "pending").length;
+
+                document.getElementById("tt").innerHTML = total;
+                document.getElementById("cm").innerHTML = completed;
+                document.getElementById("pe").innerHTML = pending;
+            }
+
+       function filstatus(status){
+              st = tasks.filter(t=>t.status == status );
+                showtask(st);
+                
+            } 
+
+       
+
+        function filtask(priority){
+            if(priority === "all"){
+                showtask(tasks);
+            } else {
+
+                let filtered = tasks.filter(t => t.priority === priority);
+                showtask(filtered);
+                updateCounts();
+            
+        }
+
+        
+    }
+
+
+        function toggle(id, isChecked){
+            document.getElementById("hiy").style.display = "none";
+            
+            let index = tasks.findIndex(t => t.id === id);
+                tasks[index].status = isChecked ? "completed" : "pending";
+                
+                saveTasks();
+                showtask(tasks);
+                updateCounts();
+                
+
+        }   
+
+        function to(isChecked){
+            if (isChecked){
+            document.getElementById("main").style.backgroundColor = "black";
+            document.getElementById("showtask").style.backgroundColor = "black";
+            document.getElementById("showtask").style.color = "white";
+        } else{
+            document.getElementById("main").style.backgroundColor = "blueviolet";
+            document.getElementById("showtask").style.backgroundColor = "white";
+            document.getElementById("showtask").style.color = "black";
+        }
+    }
+
+
+    </script>
+
+</body>
+</html>
