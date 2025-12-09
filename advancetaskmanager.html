@@ -80,6 +80,11 @@
             background-color: blue;
             color: white;
         }
+
+        button.active{
+        background-color: blue !important ;
+        color: white !important ;
+        }
         @media(max-width:800px){
             #count{
             display: flex;
@@ -96,6 +101,8 @@
             display: flex;
             flex-direction: column;
         }
+        
+
     }
 
 
@@ -139,15 +146,15 @@
 
     
     <div id="f">
-        <button onclick="filtask('all')">All</button>
-        <button onclick="filstatus('pending')">Pending</button>
-        <button onclick="filstatus('completed')">completed</button>
+    <button class="filterBtn" onclick="filtask('all', this)">All</button>
+    <button class="filterBtn" onclick="filstatus('pending', this)">Pending</button>
+    <button class="filterBtn" onclick="filstatus('completed', this)">Completed</button>
 
-        
-        <button onclick="filtask('High')">High</button>
-        <button onclick="filtask('Medium')">Medium</button>
-        <button onclick="filtask('Low')">Low</button>
-    </div> 
+    <button class="filterBtn" onclick="filtask('High', this)">High</button>
+    <button class="filterBtn" onclick="filtask('Medium', this)">Medium</button>
+    <button class="filterBtn" onclick="filtask('Low', this)">Low</button>
+    </div>
+
     
     <div id="showtask"></div>
     </div>
@@ -157,12 +164,14 @@
 
         let tasks = [];
         let editIndex = null;
+        let currentFilter = { type: "all", value: "" };
+
 
         
         if(localStorage.getItem("tasks")){
             tasks = JSON.parse(localStorage.getItem("tasks"));
-            showtask(tasks);
-            updateCounts()
+            applyFilter();
+            updateCounts();
         }
 
         
@@ -195,6 +204,12 @@
         
         function showtask(taskArray){
             document.getElementById("showtask").innerHTML = "";
+            let container = document.getElementById("showtask");
+
+            if (taskArray.length === 0) {
+                container.innerHTML = `<p style="padding:15px; text-align:center; color:red;">No results found</p>`;
+        return;
+    }
 
             taskArray.forEach((task, index) => {
 
@@ -234,7 +249,7 @@
                         </div>
                     </div>
                 `;
-
+                
             });
         }
 
@@ -244,11 +259,16 @@
         }
 
         
-        function openedit(id){
-            document.getElementById("editBox_" + id).style.display = "block";
-            document.getElementById("del").style.display = "none";
+        
+        function openedit(id) {
+            if (editIndex !== null && editIndex !== id) {
+                let oldBox = document.getElementById("editBox_" + editIndex);
+                if (oldBox) oldBox.style.display = "none";
+            }
 
-        }
+                editIndex = id;
+                document.getElementById("editBox_" + id).style.display = "block";
+            }
 
         
         function cancelEdit(id){
@@ -268,7 +288,7 @@
             tasks[index].status = updatestatus;
 
             saveTasks();
-            showtask(tasks);
+            applyFilter() ;
             updateCounts();
         }
 
@@ -293,27 +313,40 @@
                 document.getElementById("pe").innerHTML = pending;
             }
 
-       function filstatus(status){
-              st = tasks.filter(t=>t.status == status );
-                showtask(st);
-                
-            } 
-
-       
-
-        function filtask(priority){
-            if(priority === "all"){
-                showtask(tasks);
-            } else {
-
-                let filtered = tasks.filter(t => t.priority === priority);
-                showtask(filtered);
-                updateCounts();
-            
+        function filstatus(status, btn) {
+            currentFilter = { type: "status", value: status };
+            applyFilter();
+            setActive(btn);
         }
 
-        
-    }
+        function filtask(priority, btn) {
+            if (priority === "all") {
+            currentFilter = { type: "all", value: "" };
+            } else {
+            currentFilter = { type: "priority", value: priority };
+            }
+            applyFilter();
+            setActive(btn);
+        }
+
+
+
+            function applyFilter() {
+                if (currentFilter.type === "all") {
+                    showtask(tasks);
+                } else if (currentFilter.type === "status") {
+                    showtask(tasks.filter(t => t.status === currentFilter.value));
+                } else if (currentFilter.type === "priority") {
+                    showtask(tasks.filter(t => t.priority === currentFilter.value));
+            }
+        }
+
+            function setActive(btn) {
+                document.querySelectorAll(".filterBtn").forEach(b => b.classList.remove("active"));
+                btn.classList.add("active");
+            }
+
+
 
 
         function toggle(id, isChecked){
@@ -323,7 +356,7 @@
                 tasks[index].status = isChecked ? "completed" : "pending";
                 
                 saveTasks();
-                showtask(tasks);
+                applyFilter();
                 updateCounts();
                 
 
